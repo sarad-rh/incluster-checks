@@ -176,6 +176,20 @@ class TestTlsCertificateExpiry(RuleTestBase):
                 ),
             }),
         ),
+        RuleScenarioParams(
+            "unparseable cert alongside a valid cert warns instead of passing",
+            oc_cmd_output_dict=_oc_outputs({
+                "openshift-ingress": CmdOutput(
+                    _make_secrets_json([("valid-tls", "openshift-ingress", _valid_cert)])
+                ),
+                "openshift-config": CmdOutput(
+                    json.dumps({"items": [{
+                        "metadata": {"name": "bad-secret", "namespace": "openshift-config"},
+                        "data": {"tls.crt": ""},
+                    }]})
+                ),
+            }),
+        ),
     ]
 
     scenario_failed = [

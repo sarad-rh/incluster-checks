@@ -109,11 +109,11 @@ class TlsCertificateExpiry(OrchestratorRule):
             message += "\n".join(f"  - {n}" for n in names)
             return RuleResult.warning(message, system_info=system_info)
 
-        if errors and not valid:
-            return RuleResult.failed(
-                f"Failed to check {len(errors)} TLS certificate(s)",
-                system_info=system_info,
-            )
+        if errors:
+            msg = f"Failed to check {len(errors)} TLS certificate(s)"
+            if not valid:
+                return RuleResult.failed(msg, system_info=system_info)
+            return RuleResult.warning(msg, system_info=system_info)
 
         return RuleResult.passed(
             f"All {len(valid)} TLS certificate(s) are valid",
